@@ -1,14 +1,19 @@
 import React from "react";
 import { Button, theme } from "antd";
-import { CaretLeft } from "phosphor-react";
+import { CaretLeft, CaretRight } from "phosphor-react";
 
-const CollapseButton: React.FC = () => {
+interface CollapseButtonProps {
+  collapsed: boolean;
+  onToggle: () => void;
+}
+
+const CollapseButton: React.FC<CollapseButtonProps> = ({ collapsed, onToggle }) => {
   const { token } = theme.useToken();
 
   return (
     <Button
-      variant="filled"
-      icon={<CaretLeft size={16} />}
+      onClick={onToggle}
+      icon={collapsed ? <CaretRight size={16} /> : <CaretLeft size={16} />}
       shape="circle"
       size="small"
       style={{

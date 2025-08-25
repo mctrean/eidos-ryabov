@@ -14,15 +14,19 @@ const { Text, Title } = Typography;
 interface AppSidebarProps {
   user: UserProfileType;
   config: AppConfig;
+  collapsed: boolean;
   onLogout?: () => void;
   onLanguageChange?: (language: string) => void;
+  onToggleCollapse: () => void;
 }
 
 const AppSidebar: React.FC<AppSidebarProps> = ({
   user,
   config,
+  collapsed,
   onLogout,
   onLanguageChange,
+  onToggleCollapse,
 }) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -38,8 +42,9 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
     <Flex
       vertical
       style={{
-        width: 274,
+        width: "100%",
         boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.25)",
+        height: "100%",
       }}
     >
       <Flex
@@ -51,18 +56,18 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
           position: "relative",
         }}
       >
-        <Logo />
-        <Title level={3} style={{ margin: 0 }}>
+        { !collapsed && <Logo /> }
+        { !collapsed && <Title level={3} style={{ margin: 0 }}>
           Сим Центр
-        </Title>
-        <CollapseButton />
+        </Title> }
+        <CollapseButton collapsed={collapsed} onToggle={onToggleCollapse} />
       </Flex>
       <Flex
         vertical
         justify="space-between"
         style={{
-          height: 856,
-          padding: "0 12px 18px 12px",
+          height: "calc(100% - 84px)",
+          padding: collapsed ? "12px 8px" : "0 12px 18px 12px",
         }}
       >
         <Menu
@@ -71,13 +76,14 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
           selectedKeys={[location.pathname]}
           onClick={({ key }) => navigate(String(key))}
           items={menuItems}
+          inlineCollapsed={collapsed}
           style={{
             border: "none",
             fontWeight: 800,
           }}
         />
 
-        <Flex vertical gap={18}>
+        {!collapsed && <Flex vertical gap={18}>
           <UserProfile user={user} />
 
           <Flex vertical>
@@ -98,7 +104,7 @@ const AppSidebar: React.FC<AppSidebarProps> = ({
           >
             Версия {config.version}
           </Text>
-        </Flex>
+        </Flex>}
       </Flex>
     </Flex>
   );

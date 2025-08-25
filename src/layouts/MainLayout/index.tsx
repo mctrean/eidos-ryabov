@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { ConfigProvider, Layout } from "antd";
 import AppSidebar from "../../components/AppSidebar";
 import type { UserProfile, AppConfig } from "../../types";
@@ -21,15 +21,29 @@ const MainLayout: React.FC<MainLayoutProps> = ({
   onLogout,
   onLanguageChange,
 }) => {
+  const [collapsed, setCollapsed] = useState(false);
+  const toggleCollapsed = () => setCollapsed((value) => !value);
+
   return (
     <ConfigProvider theme={antdTheme}>
-      <Layout style={{height: 940, width: 1920}}>
-        <Sider width={274} theme="light">
+      <Layout style={{ height: 940, width: 1920 }}>
+        <Sider
+          width={274}
+          collapsedWidth={64}
+          collapsed={collapsed}
+          theme="light"
+          style={{
+            transition: "all 400ms",
+            overflow: "visible",
+          }}
+        >
           <AppSidebar
             user={user}
             config={config}
+            collapsed={collapsed}
             onLogout={onLogout}
             onLanguageChange={onLanguageChange}
+            onToggleCollapse={toggleCollapsed}
           />
         </Sider>
         <Layout>
