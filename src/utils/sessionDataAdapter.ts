@@ -73,6 +73,7 @@ const adaptApiSessionToStudySession = (
     sessionType: uiType,
     rooms,
     group,
+    startDateTime: apiSession.start, // Сохраняем исходную ISO строку для сортировки
   };
 };
 

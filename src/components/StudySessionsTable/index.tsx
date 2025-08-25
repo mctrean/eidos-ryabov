@@ -1,13 +1,14 @@
 import React, { HTMLAttributes } from "react";
 import { Table, Typography, Space, Button } from "antd";
 import type { ColumnsType, TableProps } from "antd/es/table";
-import { CaretDown } from "phosphor-react";
+import { CaretDown, CaretUp } from "phosphor-react";
 import StatusBadge from "../StatusBadge";
 import {
   type StudySession,
   SESSION_TYPE_LABELS,
   type UiSessionType,
   type PaginationInfo,
+  type SortDirection,
 } from "../../types/studySessions";
 
 const { Text } = Typography;
@@ -17,7 +18,8 @@ interface StudySessionsTableProps {
   loading?: boolean;
   pagination?: PaginationInfo | false;
   onPageChange?: (page: number, pageSize: number) => void;
-  onSort?: (field: string, direction: "asc" | "desc") => void;
+  sortDirection?: SortDirection;
+  onSort?: () => void;
 }
 
 const StudySessionsTable: React.FC<StudySessionsTableProps> = ({
@@ -25,6 +27,7 @@ const StudySessionsTable: React.FC<StudySessionsTableProps> = ({
   loading = false,
   pagination,
   onPageChange,
+  sortDirection = "desc",
   onSort,
 }) => {
   const columns: ColumnsType<StudySession> = [
@@ -34,7 +37,12 @@ const StudySessionsTable: React.FC<StudySessionsTableProps> = ({
           <Text style={{ fontWeight: 700, fontSize: 17, color: "#2F3144" }}>
             Дата и время
           </Text>
-          <Button size="large" type="text" icon={<CaretDown />} />
+          <Button
+            size="large"
+            type="text"
+            icon={sortDirection === "desc" ? <CaretDown /> : <CaretUp />}
+            onClick={onSort}
+          />
         </Space>
       ),
       dataIndex: "date",

@@ -3,7 +3,7 @@ import { Flex, Space, Spin, message, theme } from "antd";
 import PageHeader from "../components/PageHeader";
 import SessionsControls from "../components/SessionsControls";
 import StudySessionsTable from "../components/StudySessionsTable";
-import type { StudySession, PaginationInfo } from "../types/studySessions";
+import type { StudySession, PaginationInfo, SortDirection } from "../types/studySessions";
 import {
   loadAndAdaptSessionsData,
   filterSessionsBySearch,
@@ -15,6 +15,7 @@ const StudySessions: React.FC = () => {
   const [sessionsData, setSessionsData] = useState<StudySession[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchValue, setSearchValue] = useState("");
+  const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
 
   const [pagination, setPagination] = useState<PaginationInfo>({
     current: 1,
@@ -33,7 +34,8 @@ const StudySessions: React.FC = () => {
           rowKey: `${s.id ?? "session"}-${index}`,
         }));
 
-        setSessionsData(adaptedData);
+        const sortedData = sortSessionsByTime(adaptedData, "desc");
+        setSessionsData(sortedData);
         setPagination((prev) => ({ ...prev, total: adaptedData.length }));
       } catch (error) {
         console.error(error);
@@ -46,10 +48,19 @@ const StudySessions: React.FC = () => {
     loadData();
   }, []);
 
+  const sortSessionsByTime = (data: StudySession[], direction: SortDirection): StudySession[] => {
+    return [...data].sort((a, b) => {
+      const timeA = Date.parse(a.startDateTime);
+      const timeB = Date.parse(b.startDateTime);
+
+      return direction === "asc" ? timeA - timeB : timeB - timeA;
+    });
+  };
+
   const filteredData = useMemo(() => {
-    if (!searchValue) return sessionsData;
-    return filterSessionsBySearch(sessionsData, searchValue);
-  }, [sessionsData, searchValue]);
+    const filtered = searchValue ? filterSessionsBySearch(sessionsData, searchValue) : sessionsData;
+    return sortSessionsByTime(filtered, sortDirection);
+  }, [sessionsData, searchValue, sortDirection]);
 
   useEffect(() => {
     setPagination((prev) => ({
@@ -63,6 +74,11 @@ const StudySessions: React.FC = () => {
 
   const handlePageChange = (page: number, pageSize: number) =>
     setPagination((prev) => ({ ...prev, current: page, pageSize }));
+
+  const handleSort = () => {
+    const newDirection = sortDirection === "asc" ? "desc" : "asc";
+    setSortDirection(newDirection);
+  };
 
   if (loading) {
     return (
@@ -106,6 +122,8 @@ const StudySessions: React.FC = () => {
         loading={loading}
         pagination={pagination}
         onPageChange={handlePageChange}
+        sortDirection={sortDirection}
+        onSort={handleSort}
       />
     </Flex>
   );

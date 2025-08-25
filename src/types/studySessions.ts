@@ -75,6 +75,7 @@ export interface StudySession {
   sessionType: UiSessionType;
   rooms: string[];
   group: string;
+  startDateTime: string;
 }
 
 export interface PaginationInfo {
@@ -82,6 +83,8 @@ export interface PaginationInfo {
   pageSize: number;
   total: number;
 }
+
+export type SortDirection = "asc" | "desc";
 
 export const SESSION_STATUS_CONFIG = {
   scheduled: {
