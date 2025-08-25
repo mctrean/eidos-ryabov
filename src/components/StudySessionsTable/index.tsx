@@ -192,6 +192,11 @@ const StudySessionsTable: React.FC<StudySessionsTableProps> = ({
           margin: 0 !important;
           height: 52px;
         }
+        .ant-pagination .ant-pagination-item,
+        .ant-pagination .ant-pagination-prev .ant-pagination-item-link,
+        .ant-pagination .ant-pagination-next .ant-pagination-item-link {
+          border-radius: 6px !important;
+        }
       `}
       </style>
     </>
